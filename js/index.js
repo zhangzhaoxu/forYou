@@ -213,7 +213,7 @@ a.__initTopPng = function (image) {
     var _this = this;
     var size = _this.size;
     _this.topBmp = new createjs.Bitmap(image);
-    _this.topBmp.x = size.w*0.2;
+    _this.topBmp.x = size.w*0.1;
     _this.topBmp.y = -image.height;
 
     _this.container.addChild(_this.topBmp);
@@ -268,8 +268,9 @@ a.__initArrows = function () {
     container.cache(0,0,100,120);
     container.x = _this.size.w/2 - 40;
     container.y = _this.size.h - 250;
+    container.alpha = 0;
     _this.container.addChild(container);
-    createjs.Tween.get(container,{loop:true},true).to({y : _this.size.h - 100 ,alpha : 0},1000);
+    createjs.Tween.get(container,{loop:true},true).to({y : _this.size.h - 100 ,alpha : 0.5},1000);
 };
 
 a.__initAnimate = function () {
@@ -296,6 +297,7 @@ a.__initAnimate = function () {
 
 //第一项动画结束
 
+//第二项动画开始
 function addToContainer2(stage){
     this.__initDatas(stage);
     this.__initImages();
@@ -309,10 +311,12 @@ b.__initDatas = function (stage) {
     _this.container = stage.getChildAt(1);
     _this.assets = [];
     _this.size = getSize();
-    _this.leftBmp;
-    _this.rightBmp;
+    _this.line;
+    _this.leftRect;
+    _this.rightRect;
     _this.text;
     _this.date;
+    _this.line;
 };
 
 b.__initImages = function () {
@@ -348,37 +352,50 @@ b.handleImageComplete = function () {
                 break;
         }
     }
-    //_this.__initContent();
+    _this.__initLine();
+    _this.__initContent();
     _this.__initArrows();
     _this.__initAnimate();
 };
 
 b.__initLeftImage = function (image) {
     var _this = this;
-    _this.leftBmp = new createjs.Bitmap(image);
-    var scale = _this.size.h*0.7/image.height;
-    _this.leftBmp.scaleX = _this.leftBmp.scaleY = scale;
-    _this.leftBmp.y =image.height*scale+_this.size.h*0.2;
-    _this.leftBmp.x = -image.width*scale*0.2
-    _this.leftBmp.regX = 0;
-    _this.leftBmp.regY = image.height;
-    _this.leftBmp.alpha = 0;
-    _this.leftBmp.rotation = -90;
-    _this.container.addChild(_this.leftBmp);
+    var scale = _this.size.h*0.8/image.height;
+    var leftBmp = new createjs.Bitmap(image);
+    var Rect = new createjs.Shape();
+    Rect.graphics.moveTo(0,_this.size.h*0.1).lineTo(_this.size.w*0.5,_this.size.h*0.1).lineTo(_this.size.w*0.4,_this.size.h*0.9).lineTo(-_this.size.w*0.1,_this.size.h*0.9).closePath();
+    leftBmp.scaleX = leftBmp.scaleY = scale;
+    leftBmp.y =_this.size.h*0.1;
+    leftBmp.mask = Rect;
+    _this.leftRect = new createjs.Container();
+    _this.leftRect.addChild(leftBmp,Rect);
+    _this.leftRect.regX = 0;
+    _this.leftRect.regY = _this.size.h*0.8;
+    _this.leftRect.y = _this.size.h*0.8;
+    _this.leftRect.alpha = 0;
+    _this.leftRect.rotation = -90;
+    _this.container.addChild(_this.leftRect);
 };
 
 b.__initRightImage = function (image) {
     var _this = this;
-    _this.rightBmp = new createjs.Bitmap(image);
-    var scale = _this.size.h*0.7/image.height;
-    _this.rightBmp.scaleX = _this.rightBmp.scaleY = scale;
-    _this.rightBmp.x = _this.size.w/2+image.width*scale*0.2;
-    _this.rightBmp.y = _this.size.h*0.2+image.height*scale;
-    _this.rightBmp.regX = 0;
-    _this.rightBmp.regY = image.height;
-    _this.rightBmp.alpha = 0;
-    _this.rightBmp.rotation = 90;
-    _this.container.addChild(_this.rightBmp);
+    var size = _this.size;
+    var rightBmp = new createjs.Bitmap(image);
+    var scale = _this.size.h*0.8/image.height;
+    var Rect = new createjs.Shape();
+    Rect.graphics.moveTo(size.w*0.6,size.h*0.1).lineTo(size.w*1.1,size.h*0.1).lineTo(size.w,size.h*0.9).lineTo(size.w*0.5,size.h*0.9).closePath();
+    rightBmp.scaleX = rightBmp.scaleY = scale;
+    rightBmp.x = _this.size.w/2;
+    rightBmp.y = _this.size.h*0.1;
+    rightBmp.mask = Rect;
+    _this.rightRect = new createjs.Container();
+    _this.rightRect.addChild(Rect,rightBmp);
+    _this.rightRect.regX = 0;
+    _this.rightRect.regY = size.h*0.8;
+    _this.rightRect.y = size.h*0.8;
+    _this.rightRect.alpha = 0;
+    _this.rightRect.rotation = 90;
+    _this.container.addChild(_this.rightRect);
 };
 
 b.__initArrows = function () {
@@ -401,23 +418,134 @@ b.__initArrows = function () {
     container.cache(0,0,100,120);
     container.x = _this.size.w/2 - 40;
     container.y = _this.size.h - 250;
+    container.alpha = 0;
     _this.container.addChild(container);
-    createjs.Tween.get(container,{loop:true},true).to({y : _this.size.h - 100 ,alpha : 0},1000);
+    createjs.Tween.get(container,{loop:true},true).to({y : _this.size.h - 100 ,alpha : 0.5},1000);
     _this.stage.update();
 };
 
 b.__initAnimate = function () {
     var _this = this;
-    createjs.Tween.get(_this.leftBmp,{loop : false},true).to({
-        rotation : 5,
+    createjs.Tween.get(_this.title,{loop:false},true).to({
+        y : 20,
         alpha : 1
     },1000);
-    createjs.Tween.get(_this.rightBmp,{loop : false},true).to({
-        rotation : 5,
+    createjs.Tween.get(_this.line,{loop : false},true).wait(500).to({
+        scaleX : 3,
+        scaleY : 1,
+        alpha : 1,
+        x : _this.size.w*0.2
+    },1000);
+    createjs.Tween.get(_this.leftRect,{loop : false},true).wait(1000).to({
+        rotation : 0,
         alpha : 1
     },1000);
+    createjs.Tween.get(_this.rightRect,{loop : false},true).wait(1000).to({
+        rotation : 0,
+        alpha : 1
+    },1000);
+    createjs.Tween.get(_this.text,{loop:false},true).wait(1500).to({
+        x : 30
+    },1000);
+
 
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick",_this.stage);
+};
+
+b.__initLine = function () {
+    var _this = this;
+    _this.line = new createjs.Shape();
+    _this.line.graphics.beginFill("#000").rect(0,0,_this.size.w*0.2,40);
+    _this.container.addChild(_this.line);
+    _this.line.x = _this.size.w*0.5;
+    _this.line.y = _this.size.h*0.06;
+    _this.line.alpha = 0;
+    _this.line.scaleX = _this.line.scaleY = 0;
+    _this.stage.update();
+};
+
+b.__initContent = function () {
+    var _this = this;
+    _this.title = new createjs.Text("","60px 微软雅黑 bolder","regular","#111");
+    _this.text = new createjs.Text("","30px 微软雅黑 ","regular","#111");
+    _this.date = new createjs.Text("","80px 微软雅黑","regular","#111");
+    _this.title.text = "年华";
+    _this.title.lineWidth = 120;
+    _this.title.lineHeight = 60;
+    _this.title.textAlign = "center";
+    _this.title.x = _this.size.w*0.5;
+    _this.title.y = 100;
+    _this.title.alpha = 0;
+    _this.text.text = "请牢牢站在我身边，度春秋暖风尘";
+    _this.text.lineWidth = _this.size.w*0.6;
+    _this.text.lineHeight = 40;
+    _this.text.x = -_this.size.w;
+    _this.text.y = _this.size.h*0.9 + _this.size.h*0.05;
+    _this.date.text = "12/14";
+    _this.date.lineWidth = _this.size.w*0.3;
+    _this.date.x = _this.size.w*1.2;
+    _this.date.y = _this.size.h-90;
+    _this.date.lineHeight = 24;
+    _this.container.addChild(_this.title,_this.text,_this.date);
+};
+//第二项动画结束
+
+function addToContainer3(stage){
+    this.__initDatas(stage);
+    this.__initImages();
+};
+
+var c = addToContainer3.prototype;
+
+
+c.__initDatas = function (stage) {
+    var _this = this;
+    _this.stage = stage;
+    _this.container = stage.getChildAt(1);
+    _this.assets = [];
+    _this.size = getSize();
+};
+
+c.__initImages = function () {
+    var _this = this;
+    console.log(_this);
+    var manifest = [
+        {src : 'girl4.jpg',id: 'girl1'},
+        {src : 'girl5.jpg',id : 'girl2'},
+        {src : 'girl6.jpg',id : 'girl3'},
+        {src : 'girl7.jpg',id : 'girl4'},
+        {src : 'girl8.jpg',id : 'girl5'}
+    ];
+    var preload = new createjs.LoadQueue(true);
+    preload.on("fileload",_this.handleImageLoad.bind(this));
+    preload.on("complete",_this.handleImageComplete.bind(this));
+    preload.loadManifest(manifest,true,"images/");
+};
+
+c.handleImageLoad = function (event) {
+    this.assets.push(event);
+};
+
+c.handleImageComplete = function () {
+    var _this = this;
+    for(var i=0;i<_this.assets.length;i++){
+        var event = _this.assets[i];
+        var id = event.item.id;
+        var result = event.result;
+
+        switch (id){
+            case 'girl1':
+                _this.__initLeftImage(result);
+                break;
+            case 'girl2':
+                _this.__initRightImage(result);
+                break;
+        }
+    }
+    _this.__initLine();
+    _this.__initContent();
+    _this.__initArrows();
+    _this.__initAnimate();
 };
 
