@@ -97,6 +97,14 @@ p.__containerChange = function () {
                     case 1 :
                         new addToContainer2(_this.stage);
                         break;
+                    case 2 :
+                        new addToContainer3(_this.stage);
+                        break;
+                    case 3 :
+                        new addToContainer4(_this.stage);
+                        break;
+                    case 4 :
+                        new addToContainer5(_this.stage);
                 }
             });
         }else if(moveMarker - markerDown >= 200&&_this.moveMark>0){
@@ -116,6 +124,14 @@ p.__containerChange = function () {
                     case 1 :
                         new addToContainer2(_this.stage);
                         break;
+                    case 2 :
+                        new addToContainer3(_this.stage);
+                        break;
+                    case 3 :
+                        new addToContainer4(_this.stage);
+                        break;
+                    case 4 :
+                        new addToContainer5(_this.stage);
                 }
             });
         }
@@ -232,8 +248,8 @@ a.__initRightPng = function (image) {
 
 a.__initContent = function () {
     var _this = this;
-    _this.text = new createjs.Text("","40px 微软雅黑","regular","#111");
-    _this.date = new createjs.Text("","80px 微软雅黑","regular","#111");
+    _this.text = new createjs.Text("","40px 微软雅黑","#111");
+    _this.date = new createjs.Text("","80px 微软雅黑","#111");
     _this.text.text = "这是我们的留念~我们的每一天!";
     _this.text.lineWidth = 300;
     _this.text.lineHeight = 18;
@@ -321,7 +337,6 @@ b.__initDatas = function (stage) {
 
 b.__initImages = function () {
     var _this = this;
-    console.log(_this);
     var manifest = [
         {src : 'girl1.jpg',id: 'leftImage'},
         {src : 'girl2.jpg',id : 'rightImage'}
@@ -490,7 +505,7 @@ b.__initContent = function () {
     _this.container.addChild(_this.title,_this.text,_this.date);
 };
 //第二项动画结束
-
+//第三项动画开始
 function addToContainer3(stage){
     this.__initDatas(stage);
     this.__initImages();
@@ -502,9 +517,14 @@ var c = addToContainer3.prototype;
 c.__initDatas = function (stage) {
     var _this = this;
     _this.stage = stage;
-    _this.container = stage.getChildAt(1);
+    _this.container = stage.getChildAt(2);
     _this.assets = [];
     _this.size = getSize();
+    _this.bmp1Con;
+    _this.bmp2Con;
+    _this.bmp3Con;
+    _this.bmp4Con;
+    _this.contentCon;
 };
 
 c.__initImages = function () {
@@ -514,8 +534,7 @@ c.__initImages = function () {
         {src : 'girl4.jpg',id: 'girl1'},
         {src : 'girl5.jpg',id : 'girl2'},
         {src : 'girl6.jpg',id : 'girl3'},
-        {src : 'girl7.jpg',id : 'girl4'},
-        {src : 'girl8.jpg',id : 'girl5'}
+        {src : 'girl1.jpg',id : 'girl4'}
     ];
     var preload = new createjs.LoadQueue(true);
     preload.on("fileload",_this.handleImageLoad.bind(this));
@@ -529,23 +548,419 @@ c.handleImageLoad = function (event) {
 
 c.handleImageComplete = function () {
     var _this = this;
-    for(var i=0;i<_this.assets.length;i++){
-        var event = _this.assets[i];
-        var id = event.item.id;
-        var result = event.result;
-
-        switch (id){
-            case 'girl1':
-                _this.__initLeftImage(result);
-                break;
-            case 'girl2':
-                _this.__initRightImage(result);
-                break;
-        }
-    }
-    _this.__initLine();
-    _this.__initContent();
+    _this.__initBmps();
     _this.__initArrows();
     _this.__initAnimate();
 };
 
+c.__initBmps = function () {
+    var _this = this;
+    var size = _this.size;
+    var image0 = _this.assets[0].result;
+    var bmp1 = new createjs.Bitmap(image0);
+    var scale1 = size.w*0.5/image0.width;
+    bmp1.scaleX = bmp1.scaleY = scale1;
+    var rect1 = new createjs.Shape();
+    rect1.graphics.drawRect(0,0,size.w*0.5,size.w*0.5);
+    bmp1.y = -(image0.height*scale1-size.h*0.2)/2;
+    bmp1.mask = rect1;
+    _this.bmp1Con = new createjs.Container();
+    _this.bmp1Con.addChild(bmp1,rect1);
+    _this.bmp1Con.y = size.h*0.2;
+    _this.bmp1Con.x = -size.w* 0.5;
+    _this.container.addChild(_this.bmp1Con);
+
+    var image1 = _this.assets[1].result;
+    var bmp2 = new createjs.Bitmap(image1);
+    var scale2 = size.w*0.5/image1.width;
+    bmp2.scaleX = bmp2.scaleY = scale2;
+    var rect2 = new createjs.Shape();
+    rect2.graphics.drawRect(0,0,size.w*0.5,size.w*0.5);
+    bmp2.y = -(image1.height*scale2-size.h*0.2)/2;
+    bmp2.mask = rect2;
+    _this.bmp2Con = new createjs.Container();
+    _this.bmp2Con.addChild(bmp2,rect2);
+    _this.bmp2Con.x = size.w*0.5;
+    _this.bmp2Con.y = -(image1.height*scale2+100);
+    _this.container.addChild(_this.bmp2Con);
+
+    var image2 = _this.assets[2].result;
+    var bmp3 = new createjs.Bitmap(image2);
+    var scale3 =size.w*0.6/image2.width;
+    bmp3.scaleX = bmp3.scaleY =scale3;
+    bmp3.y = -(image2.height*scale3 - size.h*0.25)/2;
+    var rect3 = new createjs.Shape();
+    rect3.graphics.drawEllipse(0,0,size.w* 0.6,size.h*0.25);
+    bmp3.mask = rect3;
+    _this.bmp3Con = new createjs.Container();
+    _this.bmp3Con.addChild(rect3,bmp3);
+    _this.bmp3Con.x = size.w;
+    _this.bmp3Con.y = size.h*0.4;
+    _this.container.addChild(_this.bmp3Con);
+
+    _this.__initContent();
+
+    var image3 = _this.assets[3].result;
+    var bmp4 = new createjs.Bitmap(image3);
+    var scale4= size.w*0.5/image3.width;
+    bmp4.scaleX = bmp4.scaleY = scale4;
+    bmp4.y = -(image3.height*scale4-size.w*0.5)/2;
+    var circle = new createjs.Shape();
+    circle.graphics.drawCircle(size.w* 0.25,size.w*0.25,size.w*0.25);
+    bmp4.mask = circle;
+    _this.bmp4Con = new createjs.Container();
+    _this.bmp4Con.addChild(circle,bmp4);
+    _this.bmp4Con.x = size.w;
+    _this.bmp4Con.y = size.h*0.6;
+    _this.container.addChild(_this.bmp4Con);
+};
+
+c.__initContent = function () {
+    var _this = this;
+    var w = _this.size.w;
+    var h = _this.size.h;
+    var line = new createjs.Shape();
+    line.graphics.beginFill("red").beginStroke(5).moveTo(w*0.3,0).lineTo(w*0.7,0).arcTo(w,0,w,h*0.2,w*0.3).lineTo(w,h*0.3).arcTo(w,h*0.5,w*0.7,h*0.5,w*0.3).lineTo(w*0.3,h*0.5).arcTo(0,h*0.5,0,h*0.3,w*0.3).lineTo(0,h*0.2).arcTo(0,0,w*0.3,0,w*0.3);
+    line.alpha = 0.3;
+
+    var line2 = new createjs.Shape();
+    line2.graphics.beginStroke("#fff").setStrokeStyle(10,"round","round").moveTo(w*0.3,h*0.05).lineTo(w*0.1,h*0.4);
+    _this.contentCon = new createjs.Container();
+
+    var content = new createjs.Text("","bold 50px Consolas","#fff");
+    content.text = "In fact, you do not understand the true meaning of the so-called portrait. The true meaning of the portrait is a true reflection of their own real life like.";
+    content.lineWidth = w*0.6;
+    content.lineHeight = 50;
+    content.y = h*0.12;
+    content.x = w*0.3;
+    _this.contentCon.addChild(line,line2,content);
+    _this.contentCon.y = h*0.2;
+    _this.contentCon.alpha = 0;
+    _this.container.addChild(_this.contentCon);
+};
+
+c.__initArrows = function () {
+    var _this  = this;
+    var Arrow1 = new createjs.Shape();
+    Arrow1.graphics.setStrokeStyle(15,"round","round").beginStroke("#000").moveTo(0,0).lineTo(40,25).lineTo(80,0).endStroke();
+    Arrow1.alpha = 0.8;
+    var Arrow2 = new createjs.Shape();
+    Arrow2.graphics.setStrokeStyle(15,"round","round").beginStroke("#000").moveTo(0,0).lineTo(35,25).lineTo(70,0).endStroke();
+    Arrow2.y = 40;
+    Arrow2.x = 5;
+    Arrow2.alpha = 0.6;
+    var Arrow3 = new createjs.Shape();
+    Arrow3.graphics.setStrokeStyle(15,"round","round").beginStroke("#000").moveTo(0,0).lineTo(30,25).lineTo(60,0).endStroke();
+    Arrow3.y = 80;
+    Arrow3.x = 10;
+    Arrow3.alpha = 0.4;
+    var container = new createjs.Container;
+    container.addChild(Arrow1,Arrow2,Arrow3);
+    container.cache(0,0,100,120);
+    container.x = _this.size.w/2 - 40;
+    container.y = _this.size.h - 250;
+    container.alpha = 0;
+    _this.container.addChild(container);
+    createjs.Tween.get(container,{loop:true},true).to({y : _this.size.h - 100 ,alpha : 0.5},1000);
+};
+
+c.__initAnimate = function () {
+    var _this = this;
+    var size = this.size;
+    createjs.Tween.get(_this.bmp1Con,{loop : false},true).to({
+        x : size.w*0.1
+    },1000);
+    createjs.Tween.get(_this.bmp2Con,{loop : false},true).wait(500).to({
+        y : size.h* 0.03
+    },1000);
+    createjs.Tween.get(_this.bmp3Con,{loop : false},true).wait(1000).to({
+        x : size.w*0.4
+    },1000);
+    createjs.Tween.get(_this.bmp4Con,{loop : false},true).wait(1500).to({
+        x : size.w*0.3
+    },1000);
+    createjs.Tween.get(_this.contentCon,{loop: false},true).wait(2000).to({
+        alpha : 1
+    },1000);
+
+    createjs.Ticker.setFPS(60);
+    createjs.Ticker.addEventListener("tick",_this.stage);
+};
+
+//第三项动画结束
+//第四项动画开始
+
+
+function addToContainer4(stage){
+    this.__initDatas(stage);
+    this.__initImages();
+};
+
+var d = addToContainer4.prototype;
+
+
+d.__initDatas = function (stage) {
+    var _this = this;
+    _this.stage = stage;
+    _this.container = stage.getChildAt(3);
+    _this.assets = [];
+    _this.size = getSize();
+    _this.bmp0Con = new createjs.Container();
+    _this.bmp1;
+    _this.bmp2;
+};
+
+d.__initImages = function () {
+    var _this = this;
+    console.log(_this);
+    var manifest = [
+        {src : 'girl1.jpg',id: 'girl1'},
+        {src : 'icon11.png',id: 'icon11'},
+        {src : 'icon12.png',id: 'icon12'}
+    ];
+    var preload = new createjs.LoadQueue(true);
+    preload.on("fileload",_this.handleImageLoad.bind(this));
+    preload.on("complete",_this.handleImageComplete.bind(this));
+    preload.loadManifest(manifest,true,"images/");
+};
+
+d.handleImageLoad = function (event) {
+    this.assets.push(event);
+};
+
+d.handleImageComplete = function () {
+    var _this = this;
+    _this.__initBmps();
+    _this.__initArrows();
+    _this.__initAnimate();
+};
+
+d.__initBmps = function () {
+    var _this = this;
+    var w = _this.size.w;
+    var h = _this.size.h;
+    var image0 = _this.assets[0].result;
+    var bmp0 = new createjs.Bitmap(image0);
+    var scale0 = w/image0.width;
+    bmp0.scaleX = bmp0.scaleY = scale0;
+    var rect0 = new createjs.Shape();
+    rect0.graphics.drawRect(0,0,w,h*0.8);
+    bmp0.mask = rect0;
+    _this.bmp0Con.addChild(bmp0,rect0);
+    _this.bmp0Con.y = h*0.1;
+    _this.bmp0Con.x = w*0.5;
+    _this.bmp0Con.regX = w*0.5;
+    _this.bmp0Con.scaleX = -1;
+    _this.bmp0Con.alpha = 0;
+    _this.container.addChild(_this.bmp0Con);
+
+    var image1 = _this.assets[1].result;
+    _this.bmp1 = new createjs.Bitmap(image1);
+    var scale1X = w/image1.width;
+    var scale1Y = h*0.87/image1.height;
+    _this.bmp1.scaleX = scale1X;
+    _this.bmp1.scaleY = scale1Y;
+    _this.bmp1.y = h;
+    _this.container.addChild(_this.bmp1);
+
+    var image2 = _this.assets[2].result;
+    _this.bmp2 = new createjs.Bitmap(image2);
+    var scale2 = w*0.3/image2.width;
+    _this.bmp2.scaleX = _this.bmp2.scaleY = scale2;
+    _this.bmp2.x= -w*0.6;
+    _this.bmp2.y = h*0.3;
+    _this.container.addChild(_this.bmp2);
+
+};
+
+d.__initArrows = function () {
+    var _this  = this;
+    var Arrow1 = new createjs.Shape();
+    Arrow1.graphics.setStrokeStyle(15,"round","round").beginStroke("#000").moveTo(0,0).lineTo(40,25).lineTo(80,0).endStroke();
+    Arrow1.alpha = 0.8;
+    var Arrow2 = new createjs.Shape();
+    Arrow2.graphics.setStrokeStyle(15,"round","round").beginStroke("#000").moveTo(0,0).lineTo(35,25).lineTo(70,0).endStroke();
+    Arrow2.y = 40;
+    Arrow2.x = 5;
+    Arrow2.alpha = 0.6;
+    var Arrow3 = new createjs.Shape();
+    Arrow3.graphics.setStrokeStyle(15,"round","round").beginStroke("#000").moveTo(0,0).lineTo(30,25).lineTo(60,0).endStroke();
+    Arrow3.y = 80;
+    Arrow3.x = 10;
+    Arrow3.alpha = 0.4;
+    var container = new createjs.Container;
+    container.addChild(Arrow1,Arrow2,Arrow3);
+    container.cache(0,0,100,120);
+    container.x = _this.size.w/2 - 40;
+    container.y = _this.size.h - 250;
+    container.alpha = 0;
+    _this.container.addChild(container);
+    createjs.Tween.get(container,{loop:true},true).to({y : _this.size.h - 100 ,alpha : 0.5},1000);
+};
+
+d.__initAnimate = function () {
+    var _this = this;
+    var size = this.size;
+    createjs.Tween.get(_this.bmp0Con,{loop : false},true).to({
+        scaleX : 1,
+        alpha : 1
+    },2000,createjs.Ease.bounceInOut);
+    createjs.Tween.get(_this.bmp1,{loop : false},true).wait(1000).to({
+        y : _this.size.h*0.06
+    },500);
+    createjs.Tween.get(_this.bmp2,{loop : false},true).wait(1300).to({
+        x : _this.size.w*0.1
+    },500);
+
+    createjs.Ticker.setFPS(60);
+    createjs.Ticker.addEventListener("tick",_this.stage);
+};
+
+//第四个动画结束
+//第五个动画开始
+
+function addToContainer5(stage){
+    this.__initDatas(stage);
+    this.__initImages();
+};
+
+var e = addToContainer5.prototype;
+
+
+e.__initDatas = function (stage) {
+    var _this = this;
+    _this.stage = stage;
+    _this.container = stage.getChildAt(4);
+    _this.assets = [];
+    _this.size = getSize();
+    _this.bmp0Con = new createjs.Container();
+    _this.bmp1Con = new createjs.Container();
+    _this.title;
+    _this.text;
+};
+
+e.__initImages = function () {
+    var _this = this;
+    console.log(_this);
+    var manifest = [
+        {src : '17.jpg',id: '17'},
+        {src : '18.jpg',id: '18'}
+    ];
+    var preload = new createjs.LoadQueue(true);
+    preload.on("fileload",_this.handleImageLoad.bind(this));
+    preload.on("complete",_this.handleImageComplete.bind(this));
+    preload.loadManifest(manifest,true,"images/");
+};
+
+e.handleImageLoad = function (event) {
+    this.assets.push(event);
+};
+
+
+e.handleImageComplete = function () {
+    var _this = this;
+    _this.__initBmps();
+    _this.__initArrows();
+    _this.__initContent();
+    _this.__initAnimate();
+};
+
+e.__initBmps = function () {
+    var _this = this;
+    var w = _this.size.w;
+    var h = _this.size.h;
+
+    var image0 = _this.assets[0].result;
+    var bmp0 = new createjs.Bitmap(image0);
+    var scale0 = w*0.8/image0.width;
+    bmp0.scaleX = scale0;
+    bmp0.scaleY = h*0.6>image0.height? h*0.6/image0.height : 1;
+    var rect0 = new createjs.Shape();
+    rect0.graphics.beginStroke("#FFF").setStrokeStyle(20).drawRect(0,0,w*0.8,h*0.6);
+    bmp0.mask = rect0;
+    _this.bmp0Con.addChild(bmp0,rect0);
+    _this.bmp0Con.regX = w*0.8;
+    _this.bmp0Con.regY = h*0.6;
+    _this.bmp0Con.x = w*0.9;
+    _this.bmp0Con.y = h*0.65;
+    _this.bmp0Con.rotation = 90;
+    _this.bmp0Con.alpha = 0;
+    _this.bmp0Con.cache(0,0,w,h);
+    _this.container.addChild(_this.bmp0Con);
+
+    var image1 = _this.assets[0].result;
+    var bmp1 = new createjs.Bitmap(image1);
+    var scale1 = w*0.5/image1.width;
+    bmp1.scaleX = scale1;
+    bmp1.scaleY = h*0.3>image0.height? h*0.3/image1.height : 1;
+    var rect1 = new createjs.Shape();
+    rect1.graphics.beginStroke("#FFF").setStrokeStyle(20).drawRect(0,0,w*0.5,h*0.2);
+    bmp1.mask = rect1;
+    _this.bmp1Con.addChild(bmp1,rect1);
+    _this.bmp1Con.regX = -w*0.2;
+    _this.bmp1Con.regY = h*0.25;
+    _this.bmp1Con.y = h*0.85;
+    _this.bmp1Con.x = w*0.2;
+    _this.bmp1Con.rotation = -90;
+    _this.bmp1Con.alpha = 0;
+    _this.bmp1Con.cache(0,0,w,h);
+    _this.container.addChild(_this.bmp1Con);
+};
+
+e.__initArrows = function () {
+    var _this  = this;
+    var Arrow1 = new createjs.Shape();
+    Arrow1.graphics.setStrokeStyle(15,"round","round").beginStroke("#000").moveTo(0,0).lineTo(40,25).lineTo(80,0).endStroke();
+    Arrow1.alpha = 0.8;
+    var Arrow2 = new createjs.Shape();
+    Arrow2.graphics.setStrokeStyle(15,"round","round").beginStroke("#000").moveTo(0,0).lineTo(35,25).lineTo(70,0).endStroke();
+    Arrow2.y = 40;
+    Arrow2.x = 5;
+    Arrow2.alpha = 0.6;
+    var Arrow3 = new createjs.Shape();
+    Arrow3.graphics.setStrokeStyle(15,"round","round").beginStroke("#000").moveTo(0,0).lineTo(30,25).lineTo(60,0).endStroke();
+    Arrow3.y = 80;
+    Arrow3.x = 10;
+    Arrow3.alpha = 0.4;
+    var container = new createjs.Container;
+    container.addChild(Arrow1,Arrow2,Arrow3);
+    container.cache(0,0,100,120);
+    container.x = _this.size.w/2 - 40;
+    container.y = _this.size.h - 250;
+    container.alpha = 0;
+    _this.container.addChild(container);
+    createjs.Tween.get(container,{loop:true},true).to({y : _this.size.h - 100 ,alpha : 0.5},1000);
+};
+
+e.__initContent = function () {
+    var _this = this;
+    _this.title = new createjs.Text("","bold 80px 微软雅黑","#111");
+    _this.title.text = "时 | 光";
+    _this.title.y = _this.size.h*0.75;
+    _this.title.x = _this.size.w*0.1;
+    _this.container.addChild(_this.title);
+
+    _this.text = new createjs.Text("","bold 40px Consolas","#fff");
+    _this.text.text = "forever you are";
+    _this.text.lineWidth = _this.size.w*0.5;
+    _this.text.lineHeight = 50;
+    _this.text.x = _this.size.w*0.02;
+    _this.text.y = _this.size.h*0.95;
+    _this.container.addChild(_this.text);
+    _this.stage.update();
+};
+
+e.__initAnimate = function () {
+    var _this = this;
+    createjs.Tween.get(_this.bmp0Con,{loop : false},true).to({
+        rotation : -3,
+        alpha : 1
+    },1000);
+    createjs.Tween.get(_this.bmp1Con,{loop : false},true).wait(1000).to({
+        rotation : 10,
+        alpha : 1
+    },500);
+
+    createjs.Ticker.setFPS(60);
+    createjs.Ticker.addEventListener("tick",_this.stage);
+};
